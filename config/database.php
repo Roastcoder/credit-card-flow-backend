@@ -1,7 +1,7 @@
 <?php
 class Database {
-    private $host = "72.61.238.231";
-    private $port = "3000";
+    private $host = "g4gcw8cgswco8k8o488008gg";
+    private $port = "5432";
     private $db_name = "board";
     private $username = "Board";
     private $password = "Sanam@28";
