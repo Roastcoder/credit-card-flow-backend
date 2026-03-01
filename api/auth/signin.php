@@ -17,6 +17,16 @@ if(!empty($data->identifier) && !empty($data->mpin)) {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if($user && password_verify($data->mpin, $user['mpin'])) {
+            // Decode permissions from JSONB
+            $permissions = null;
+            if (isset($user['permissions']) && !empty($user['permissions'])) {
+                if (is_string($user['permissions'])) {
+                    $permissions = json_decode($user['permissions'], true);
+                } else {
+                    $permissions = $user['permissions'];
+                }
+            }
+            
             http_response_code(200);
             echo json_encode(array(
                 "success" => true, 
@@ -25,7 +35,7 @@ if(!empty($data->identifier) && !empty($data->mpin)) {
                     "mobile" => $user['mobile'], 
                     "name" => $user['name'],
                     "role" => $user['role'],
-                    "permissions" => $user['permissions']
+                    "permissions" => $permissions
                 )
             ));
         } else {
