@@ -33,7 +33,7 @@ if(!empty($data->mobile) && !empty($data->mpin)) {
             ]
         ]);
         
-        $query = "INSERT INTO users (name, mobile, email, mpin, employee_type, channel_code, pan, dob, aadhaar, aadhaar_name, aadhaar_address, aadhaar_father_name, aadhaar_photo, role, permissions) VALUES (:name, :mobile, :email, :mpin, :employee_type, :channel_code, :pan, :dob, :aadhaar, :aadhaar_name, :aadhaar_address, :aadhaar_father_name, :aadhaar_photo, :role, :permissions)";
+        $query = "INSERT INTO users (name, mobile, email, mpin, employee_type, channel_code, pan, dob, aadhaar, aadhaar_name, aadhaar_address, aadhaar_father_name, aadhaar_photo, bank_account, ifsc, role, permissions) VALUES (:name, :mobile, :email, :mpin, :employee_type, :channel_code, :pan, :dob, :aadhaar, :aadhaar_name, :aadhaar_address, :aadhaar_father_name, :aadhaar_photo, :bank_account, :ifsc, :role, :permissions)";
         
         $stmt = $db->prepare($query);
         $role = 'employee';
@@ -50,6 +50,8 @@ if(!empty($data->mobile) && !empty($data->mpin)) {
         $stmt->bindParam(':aadhaar_address', $data->aadhaar_address);
         $stmt->bindParam(':aadhaar_father_name', $data->aadhaar_father_name);
         $stmt->bindParam(':aadhaar_photo', $data->aadhaar_photo);
+        $stmt->bindParam(':bank_account', $data->bank_account);
+        $stmt->bindParam(':ifsc', $data->ifsc);
         $stmt->bindParam(':role', $role);
         $stmt->bindParam(':permissions', $permissions);
         
