@@ -18,7 +18,16 @@ if(!empty($data->identifier) && !empty($data->mpin)) {
         
         if($user && password_verify($data->mpin, $user['mpin'])) {
             http_response_code(200);
-            echo json_encode(array("success" => true, "token" => bin2hex(random_bytes(32)), "user" => array("mobile" => $user['mobile'], "name" => $user['name'])));
+            echo json_encode(array(
+                "success" => true, 
+                "token" => bin2hex(random_bytes(32)), 
+                "user" => array(
+                    "mobile" => $user['mobile'], 
+                    "name" => $user['name'],
+                    "role" => $user['role'],
+                    "permissions" => $user['permissions']
+                )
+            ));
         } else {
             http_response_code(401);
             echo json_encode(array("error" => "Invalid credentials"));
