@@ -56,8 +56,23 @@ if(!empty($data->mobile) && !empty($data->mpin)) {
         $stmt->bindParam(':permissions', $permissions);
         
         $stmt->execute();
+        
+        // Get the inserted user ID
+        $user_id = $db->lastInsertId();
+        
         http_response_code(200);
-        echo json_encode(array("success" => true, "token" => bin2hex(random_bytes(32)), "user" => array("mobile" => $data->mobile, "name" => $data->name)));
+        echo json_encode(array(
+            "success" => true, 
+            "token" => bin2hex(random_bytes(32)), 
+            "user" => array(
+                "id" => $user_id,
+                "mobile" => $data->mobile, 
+                "name" => $data->name,
+                "channel_code" => $data->channel_code,
+                "role" => $role,
+                "permissions" => json_decode($permissions, true)
+            )
+        ));
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(array("error" => "Registration failed: " . $e->getMessage()));

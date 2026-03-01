@@ -34,6 +34,7 @@ if(!empty($data->identifier) && !empty($data->mpin)) {
                 "user" => array(
                     "mobile" => $user['mobile'], 
                     "name" => $user['name'],
+                    "channel_code" => $user['channel_code'],
                     "role" => $user['role'],
                     "permissions" => $permissions
                 )
