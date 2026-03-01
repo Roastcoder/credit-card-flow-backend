@@ -25,7 +25,7 @@ class CreditCard {
     }
 
     public function read() {
-        $query = "SELECT * FROM " . $this->table . " ORDER BY created_at DESC";
+        $query = "SELECT * FROM " . $this->table . " ORDER BY name ASC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
