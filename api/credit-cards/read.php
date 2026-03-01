@@ -25,6 +25,10 @@ if($num > 0) {
             "joining_fee" => $joining_fee,
             "dsa_commission" => $dsa_commission,
             "reward_points" => $reward_points,
+            "redirect_url" => $redirect_url ?? '',
+            "payout_source" => $payout_source ?? '',
+            "pincodes" => $pincodes ?? '',
+            "terms" => $terms ?? '',
             "status" => $status,
             "created_at" => $created_at
         );
