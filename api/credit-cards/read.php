@@ -29,6 +29,8 @@ if($num > 0) {
             "payout_source" => $payout_source ?? '',
             "pincodes" => $pincodes ?? '',
             "terms" => $terms ?? '',
+            "card_image" => $card_image ?? '',
+            "variant_image" => $variant_image ?? '',
             "status" => $status,
             "created_at" => $created_at
         );
