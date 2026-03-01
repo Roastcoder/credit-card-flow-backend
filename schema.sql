@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS users (
     aadhaar_name VARCHAR(255),
     aadhaar_address TEXT,
     aadhaar_father_name VARCHAR(255),
+    aadhaar_photo TEXT,
     bank_account VARCHAR(50),
     ifsc VARCHAR(20),
     status VARCHAR(50) DEFAULT 'active',

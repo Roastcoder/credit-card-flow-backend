@@ -25,7 +25,7 @@ if(!empty($data->mobile) && !empty($data->mpin)) {
         
         $hashed_mpin = password_hash($data->mpin, PASSWORD_DEFAULT);
         
-        $query = "INSERT INTO users (name, mobile, email, mpin, employee_type, channel_code, pan, dob, aadhaar, aadhaar_name, aadhaar_address, aadhaar_father_name) VALUES (:name, :mobile, :email, :mpin, :employee_type, :channel_code, :pan, :dob, :aadhaar, :aadhaar_name, :aadhaar_address, :aadhaar_father_name)";
+        $query = "INSERT INTO users (name, mobile, email, mpin, employee_type, channel_code, pan, dob, aadhaar, aadhaar_name, aadhaar_address, aadhaar_father_name, aadhaar_photo) VALUES (:name, :mobile, :email, :mpin, :employee_type, :channel_code, :pan, :dob, :aadhaar, :aadhaar_name, :aadhaar_address, :aadhaar_father_name, :aadhaar_photo)";
         
         $stmt = $db->prepare($query);
         $stmt->bindParam(':name', $data->name);
@@ -40,6 +40,7 @@ if(!empty($data->mobile) && !empty($data->mpin)) {
         $stmt->bindParam(':aadhaar_name', $data->aadhaar_name);
         $stmt->bindParam(':aadhaar_address', $data->aadhaar_address);
         $stmt->bindParam(':aadhaar_father_name', $data->aadhaar_father_name);
+        $stmt->bindParam(':aadhaar_photo', $data->aadhaar_photo);
         
         $stmt->execute();
         http_response_code(200);
