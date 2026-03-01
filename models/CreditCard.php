@@ -40,7 +40,7 @@ class CreditCard {
     }
 
     public function create() {
-        $query = "INSERT INTO " . $this->table . " SET name=:name, bank=:bank, type=:type, annual_fee=:annual_fee, joining_fee=:joining_fee, dsa_commission=:dsa_commission, reward_points=:reward_points, redirect_url=:redirect_url, payout_source=:payout_source, variant_image=:variant_image, card_image=:card_image, pincodes=:pincodes, terms=:terms, status=:status";
+        $query = "INSERT INTO " . $this->table . " (name, bank, type, annual_fee, joining_fee, dsa_commission, reward_points, redirect_url, payout_source, variant_image, card_image, pincodes, terms, status) VALUES (:name, :bank, :type, :annual_fee, :joining_fee, :dsa_commission, :reward_points, :redirect_url, :payout_source, :variant_image, :card_image, :pincodes, :terms, :status)";
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(":name", $this->name);
