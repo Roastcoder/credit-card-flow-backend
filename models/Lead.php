@@ -26,7 +26,7 @@ class Lead {
 
     public function create() {
         $this->lead_id = strtoupper(substr(md5(uniqid(rand(), true)), 0, 6));
-        $query = "INSERT INTO " . $this->table . " SET lead_id=:lead_id, applicant_name=:applicant_name, applicant_email=:applicant_email, applicant_phone=:applicant_phone, card_name=:card_name, bank_name=:bank_name, status=:status";
+        $query = "INSERT INTO " . $this->table . " (lead_id, applicant_name, applicant_email, applicant_phone, card_name, bank_name, status) VALUES (:lead_id, :applicant_name, :applicant_email, :applicant_phone, :card_name, :bank_name, :status)";
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(":lead_id", $this->lead_id);
