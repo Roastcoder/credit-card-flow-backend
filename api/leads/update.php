@@ -1,9 +1,20 @@
 <?php
 include_once '../../config/cors.php';
 include_once '../../config/database.php';
+include_once '../../models/Lead.php';
 
 $database = new Database();
 $db = $database->getConnection();
+$lead = new Lead($db);
+
+$headers = getallheaders();
+$user_role = $headers['X-User-Role'] ?? null;
+
+if (!in_array($user_role, ['admin', 'super_admin'])) {
+    http_response_code(403);
+    echo json_encode(['message' => 'Unauthorized. Admin access required.']);
+    exit;
+}
 
 $data = json_decode(file_get_contents("php://input"));
 
@@ -13,38 +24,21 @@ if (!isset($data->id)) {
     exit;
 }
 
-$query = "UPDATE leads SET 
-    applicant_name = :applicant_name,
-    applicant_phone = :applicant_phone,
-    applicant_email = :applicant_email,
-    status = :status,
-    activation_status = :activation_status,
-    card_variant = :card_variant,
-    application_no = :application_no,
-    cust_type = :cust_type,
-    vkyc_status = :vkyc_status,
-    bkyc_status = :bkyc_status,
-    card_issued_date = :card_issued_date,
-    remark = :remark
-    WHERE id = :id";
+$lead->id = $data->id;
+$lead->applicant_name = $data->applicant_name;
+$lead->applicant_phone = $data->applicant_phone;
+$lead->applicant_email = $data->applicant_email;
+$lead->status = $data->status;
+$lead->activation_status = $data->activation_status ?? null;
+$lead->card_variant = $data->card_variant ?? null;
+$lead->application_no = $data->application_no ?? null;
+$lead->cust_type = $data->cust_type ?? null;
+$lead->vkyc_status = $data->vkyc_status ?? null;
+$lead->bkyc_status = $data->bkyc_status ?? null;
+$lead->card_issued_date = $data->card_issued_date ?? null;
+$lead->remark = $data->remark ?? null;
 
-$stmt = $db->prepare($query);
-
-$stmt->bindParam(':applicant_name', $data->applicant_name);
-$stmt->bindParam(':applicant_phone', $data->applicant_phone);
-$stmt->bindParam(':applicant_email', $data->applicant_email);
-$stmt->bindParam(':status', $data->status);
-$stmt->bindParam(':activation_status', $data->activation_status);
-$stmt->bindParam(':card_variant', $data->card_variant);
-$stmt->bindParam(':application_no', $data->application_no);
-$stmt->bindParam(':cust_type', $data->cust_type);
-$stmt->bindParam(':vkyc_status', $data->vkyc_status);
-$stmt->bindParam(':bkyc_status', $data->bkyc_status);
-$stmt->bindParam(':card_issued_date', $data->card_issued_date);
-$stmt->bindParam(':remark', $data->remark);
-$stmt->bindParam(':id', $data->id);
-
-if ($stmt->execute()) {
+if ($lead->update()) {
     http_response_code(200);
     echo json_encode(['message' => 'Lead updated successfully']);
 } else {
