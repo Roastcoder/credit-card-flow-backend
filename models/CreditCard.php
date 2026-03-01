@@ -11,6 +11,12 @@ class CreditCard {
     public $joining_fee;
     public $dsa_commission;
     public $reward_points;
+    public $redirect_url;
+    public $payout_source;
+    public $variant_image;
+    public $card_image;
+    public $pincodes;
+    public $terms;
     public $status;
     public $created_at;
 
@@ -34,7 +40,7 @@ class CreditCard {
     }
 
     public function create() {
-        $query = "INSERT INTO " . $this->table . " SET name=:name, bank=:bank, type=:type, annual_fee=:annual_fee, joining_fee=:joining_fee, dsa_commission=:dsa_commission, reward_points=:reward_points, status=:status";
+        $query = "INSERT INTO " . $this->table . " SET name=:name, bank=:bank, type=:type, annual_fee=:annual_fee, joining_fee=:joining_fee, dsa_commission=:dsa_commission, reward_points=:reward_points, redirect_url=:redirect_url, payout_source=:payout_source, variant_image=:variant_image, card_image=:card_image, pincodes=:pincodes, terms=:terms, status=:status";
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(":name", $this->name);
@@ -44,6 +50,12 @@ class CreditCard {
         $stmt->bindParam(":joining_fee", $this->joining_fee);
         $stmt->bindParam(":dsa_commission", $this->dsa_commission);
         $stmt->bindParam(":reward_points", $this->reward_points);
+        $stmt->bindParam(":redirect_url", $this->redirect_url);
+        $stmt->bindParam(":payout_source", $this->payout_source);
+        $stmt->bindParam(":variant_image", $this->variant_image);
+        $stmt->bindParam(":card_image", $this->card_image);
+        $stmt->bindParam(":pincodes", $this->pincodes);
+        $stmt->bindParam(":terms", $this->terms);
         $stmt->bindParam(":status", $this->status);
 
         return $stmt->execute();

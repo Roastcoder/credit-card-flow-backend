@@ -8,6 +8,12 @@ CREATE TABLE IF NOT EXISTS credit_cards (
     joining_fee DECIMAL(10,2) DEFAULT 0,
     dsa_commission DECIMAL(10,2) DEFAULT 0,
     reward_points TEXT,
+    redirect_url TEXT,
+    payout_source VARCHAR(255),
+    variant_image TEXT,
+    card_image TEXT,
+    pincodes TEXT,
+    terms TEXT,
     status VARCHAR(50) DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

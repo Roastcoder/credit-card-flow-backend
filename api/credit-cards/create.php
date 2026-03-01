@@ -17,6 +17,12 @@ if(!empty($data->name) && !empty($data->bank)) {
     $creditCard->joining_fee = $data->joining_fee ?? 0;
     $creditCard->dsa_commission = $data->dsa_commission ?? 0;
     $creditCard->reward_points = $data->reward_points ?? '';
+    $creditCard->redirect_url = $data->redirect_url ?? '';
+    $creditCard->payout_source = $data->payout_source ?? '';
+    $creditCard->variant_image = $data->variant_image ?? '';
+    $creditCard->card_image = $data->card_image ?? '';
+    $creditCard->pincodes = $data->pincodes ?? '';
+    $creditCard->terms = $data->terms ?? '';
     $creditCard->status = $data->status ?? 'active';
 
     if($creditCard->create()) {
