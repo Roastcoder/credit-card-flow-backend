@@ -21,7 +21,10 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         "card_name" => $card_name,
         "bank_name" => $bank_name,
         "status" => $status,
-        "created_at" => $created_at
+        "created_at" => $created_at,
+        "created_by" => $created_by ?? null,
+        "creator_name" => $creator_name ?? null,
+        "creator_email" => $creator_email ?? null
     );
     array_push($leads, $lead_item);
 }

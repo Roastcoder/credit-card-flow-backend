@@ -9,6 +9,19 @@ $lead = new Lead($db);
 
 $data = json_decode(file_get_contents("php://input"));
 
+// Get user ID from Authorization header
+$headers = getallheaders();
+$user_id = null;
+if (isset($headers['Authorization'])) {
+    $token = str_replace('Bearer ', '', $headers['Authorization']);
+    // Decode JWT to get user_id (simplified - you should use proper JWT library)
+    $token_parts = explode('.', $token);
+    if (count($token_parts) === 3) {
+        $payload = json_decode(base64_decode($token_parts[1]));
+        $user_id = $payload->user_id ?? null;
+    }
+}
+
 if(!empty($data->applicant_name) && !empty($data->applicant_phone)) {
     $lead->applicant_name = $data->applicant_name;
     $lead->applicant_email = $data->applicant_email ?? '';
@@ -16,6 +29,7 @@ if(!empty($data->applicant_name) && !empty($data->applicant_phone)) {
     $lead->card_name = $data->card_name;
     $lead->bank_name = $data->bank_name;
     $lead->status = $data->status ?? 'Generated';
+    $lead->created_by = $user_id;
 
     if($lead->create()) {
         http_response_code(201);
