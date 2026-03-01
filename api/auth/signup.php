@@ -9,6 +9,20 @@ if(!empty($data->mobile) && !empty($data->mpin)) {
         $database = new Database();
         $db = $database->getConnection();
         
+        // Check if user already exists
+        $checkQuery = "SELECT id FROM users WHERE mobile = :mobile OR email = :email OR pan = :pan";
+        $checkStmt = $db->prepare($checkQuery);
+        $checkStmt->bindParam(':mobile', $data->mobile);
+        $checkStmt->bindParam(':email', $data->email);
+        $checkStmt->bindParam(':pan', $data->pan);
+        $checkStmt->execute();
+        
+        if($checkStmt->rowCount() > 0) {
+            http_response_code(400);
+            echo json_encode(array("error" => "User already exists with this mobile, email, or PAN"));
+            exit();
+        }
+        
         $hashed_mpin = password_hash($data->mpin, PASSWORD_DEFAULT);
         
         $query = "INSERT INTO users (name, mobile, email, mpin, employee_type, channel_code, pan, dob, aadhaar, aadhaar_name, aadhaar_address, aadhaar_father_name) VALUES (:name, :mobile, :email, :mpin, :employee_type, :channel_code, :pan, :dob, :aadhaar, :aadhaar_name, :aadhaar_address, :aadhaar_father_name)";
@@ -31,8 +45,8 @@ if(!empty($data->mobile) && !empty($data->mpin)) {
         http_response_code(200);
         echo json_encode(array("success" => true, "token" => bin2hex(random_bytes(32)), "user" => array("mobile" => $data->mobile, "name" => $data->name)));
     } catch (Exception $e) {
-        http_response_code(200);
-        echo json_encode(array("success" => true, "token" => bin2hex(random_bytes(32)), "user" => array("mobile" => $data->mobile, "name" => $data->name)));
+        http_response_code(500);
+        echo json_encode(array("error" => "Registration failed: " . $e->getMessage()));
     }
 } else {
     http_response_code(400);
