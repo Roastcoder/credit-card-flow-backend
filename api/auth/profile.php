@@ -10,7 +10,7 @@ if(!empty($data->mobile)) {
         $database = new Database();
         $db = $database->getConnection();
         
-        $query = "SELECT id, name, mobile, email, employee_type, channel_code, pan, dob, aadhaar, aadhaar_name, aadhaar_address, aadhaar_father_name, aadhaar_photo, bank_account, ifsc, created_at FROM users WHERE mobile = :mobile LIMIT 1";
+        $query = "SELECT id, name, mobile, email, employee_type, channel_code, pan, dob, aadhaar, aadhaar_name, aadhaar_address, aadhaar_father_name, aadhaar_photo, bank_account, ifsc, bank_name, created_at FROM users WHERE mobile = :mobile LIMIT 1";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':mobile', $data->mobile);
         $stmt->execute();
