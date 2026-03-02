@@ -67,6 +67,8 @@ CREATE TABLE IF NOT EXISTS users (
     aadhaar_photo TEXT,
     bank_account VARCHAR(50),
     ifsc VARCHAR(20),
+    role VARCHAR(50) DEFAULT 'employee',
+    permissions JSON,
     status VARCHAR(50) DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
