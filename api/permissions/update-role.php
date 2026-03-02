@@ -8,9 +8,21 @@ if(!empty($data->user_id) && !empty($data->role)) {
     $database = new Database();
     $db = $database->getConnection();
     
-    $query = "UPDATE users SET role = :role WHERE id = :user_id";
+    // Map role to employee_type
+    $roleToEmployeeType = [
+        'super_admin' => 'SUPER_ADMIN',
+        'admin' => 'ADMIN',
+        'manager' => 'MANAGER',
+        'team_leader' => 'TL',
+        'employee' => 'EMPLOYEE',
+        'dsa_partner' => 'DSA'
+    ];
+    $employeeType = isset($roleToEmployeeType[$data->role]) ? $roleToEmployeeType[$data->role] : 'EMPLOYEE';
+    
+    $query = "UPDATE users SET role = :role, employee_type = :employee_type WHERE id = :user_id";
     $stmt = $db->prepare($query);
     $stmt->bindParam(':role', $data->role);
+    $stmt->bindParam(':employee_type', $employeeType);
     $stmt->bindParam(':user_id', $data->user_id);
     
     if($stmt->execute()) {

@@ -36,7 +36,13 @@ if(!empty($data->mobile) && !empty($data->mpin)) {
         $query = "INSERT INTO users (name, mobile, email, mpin, employee_type, channel_code, pan, dob, aadhaar, aadhaar_name, aadhaar_address, aadhaar_father_name, aadhaar_photo, bank_account, ifsc, role, permissions) VALUES (:name, :mobile, :email, :mpin, :employee_type, :channel_code, :pan, :dob, :aadhaar, :aadhaar_name, :aadhaar_address, :aadhaar_father_name, :aadhaar_photo, :bank_account, :ifsc, :role, :permissions)";
         
         $stmt = $db->prepare($query);
-        $role = 'employee';
+        
+        // Map employee_type to role
+        $roleMapping = [
+            'EMPLOYEE' => 'employee',
+            'DSA' => 'dsa_partner'
+        ];
+        $role = isset($roleMapping[$data->employee_type]) ? $roleMapping[$data->employee_type] : 'employee';
         $stmt->bindParam(':name', $data->name);
         $stmt->bindParam(':mobile', $data->mobile);
         $stmt->bindParam(':email', $data->email);
