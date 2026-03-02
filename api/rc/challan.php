@@ -24,14 +24,24 @@ if(!empty($data->rc_number) && !empty($data->chassis_number) && !empty($data->en
         ]));
         
         $response = curl_exec($ch);
+        $curl_error = curl_error($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         
-        if ($http_code !== 200) {
-            throw new Exception('Challan fetch failed');
+        if ($curl_error) {
+            throw new Exception('CURL Error: ' . $curl_error);
+        }
+        
+        if ($response === false) {
+            throw new Exception('No response from API');
         }
         
         $api_response = json_decode($response, true);
+        
+        if ($http_code !== 200) {
+            $error_msg = $api_response['message'] ?? 'Challan fetch failed';
+            throw new Exception($error_msg);
+        }
         
         http_response_code(200);
         echo json_encode($api_response);
