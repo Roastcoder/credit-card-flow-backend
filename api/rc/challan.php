@@ -8,10 +8,42 @@ include_once '../../config/database.php';
 
 $data = json_decode(file_get_contents("php://input"));
 
-if(!empty($data->rc_number) && !empty($data->chassis_number) && !empty($data->engine_number)) {
+if(!empty($data->rc_number)) {
     try {
         $api_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjM5ODg5MiwianRpIjoiMjdiNjdiNWEtZjkyZC00YTZmLTk2NmMtMDhhZjc4ZjAwNmI2IiwidHlwZSI6ImFjY2VzcyIsImlkZW50aXR5IjoiZGV2LmZpbm9uZXN0aW5kaWFAc3VyZXBhc3MuaW8iLCJuYmYiOjE3NjYzOTg4OTIsImV4cCI6MjM5NzExODg5MiwiZW1haWwiOiJmaW5vbmVzdGluZGlhQHN1cmVwYXNzLmlvIiwidGVuYW50X2lkIjoibWFpbiIsInVzZXJfY2xhaW1zIjp7InNjb3BlcyI6WyJ1c2VyIl19fQ.dl1S5S3OxNs3hwxkwtLhcTAN6CmIlYa_hg4yOl5ASlg';
         
+        // Step 1: Get vehicle details from RC
+        $ch = curl_init('https://kyc-api.surepass.io/api/v1/rc/rc-full');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $api_token,
+            'Content-Type: application/json'
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['id_number' => $data->rc_number]));
+        
+        $rc_response = curl_exec($ch);
+        $curl_error = curl_error($ch);
+        curl_close($ch);
+        
+        if ($curl_error) {
+            throw new Exception('RC API Error: ' . $curl_error);
+        }
+        
+        $rc_data = json_decode($rc_response, true);
+        
+        if (!$rc_data['success']) {
+            throw new Exception($rc_data['message'] ?? 'RC verification failed');
+        }
+        
+        $chassis = $rc_data['data']['vehicle_chasi_number'];
+        $engine = $rc_data['data']['vehicle_engine_number'];
+        
+        if (empty($chassis) || empty($engine)) {
+            throw new Exception('Chassis or Engine number not found in RC data');
+        }
+        
+        // Step 2: Get challan details
         $ch = curl_init('https://kyc-api.surepass.io/api/v1/rc/rc-related/challan-details');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -21,8 +53,8 @@ if(!empty($data->rc_number) && !empty($data->chassis_number) && !empty($data->en
         ]);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
             'rc_number' => $data->rc_number,
-            'chassis_number' => $data->chassis_number,
-            'engine_number' => $data->engine_number,
+            'chassis_number' => $chassis,
+            'engine_number' => $engine,
             'state_only' => false,
             'state_portal' => ['DL', 'TS', 'KA', 'GJ', 'MH', 'UP', 'RJ', 'HR', 'PB']
         ]));
@@ -33,11 +65,7 @@ if(!empty($data->rc_number) && !empty($data->chassis_number) && !empty($data->en
         curl_close($ch);
         
         if ($curl_error) {
-            throw new Exception('CURL Error: ' . $curl_error);
-        }
-        
-        if ($response === false) {
-            throw new Exception('No response from API');
+            throw new Exception('Challan API Error: ' . $curl_error);
         }
         
         $api_response = json_decode($response, true);
@@ -56,6 +84,6 @@ if(!empty($data->rc_number) && !empty($data->chassis_number) && !empty($data->en
     }
 } else {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'RC number, chassis number, and engine number required']);
+    echo json_encode(['success' => false, 'message' => 'RC number required']);
 }
 ?>
