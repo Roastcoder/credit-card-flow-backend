@@ -22,6 +22,7 @@ if(!empty($data->applicantName) && !empty($data->amount)) {
     $loan->employee_name = $data->employeeName ?? '';
     $loan->manager_name = $data->managerName ?? '';
     $loan->dsa_partner = $data->dsaPartner ?? '';
+    $loan->created_by_user_id = $data->createdByUserId ?? null;
 
     if($loan->create()) {
         http_response_code(201);

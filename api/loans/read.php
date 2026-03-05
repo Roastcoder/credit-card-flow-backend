@@ -7,7 +7,10 @@ $database = new Database();
 $db = $database->getConnection();
 $loan = new LoanDisbursement($db);
 
-$stmt = $loan->read();
+$user_id = $_GET['user_id'] ?? null;
+$user_role = $_GET['user_role'] ?? null;
+
+$stmt = $loan->read($user_id, $user_role);
 $loans = array();
 
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
